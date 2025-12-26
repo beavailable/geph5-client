@@ -1,0 +1,17 @@
+Source: geph5-client
+Section: net
+Priority: optional
+Maintainer: beavailable <beavailable@proton.me>
+Build-Depends:
+ debhelper-compat (= 13),
+Standards-Version: 4.7.2
+Homepage: https://github.com/geph-official/geph5
+
+Package: geph5-client
+Architecture: any
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+Suggests:
+ china-pac,
+Description: Geph is a VPN

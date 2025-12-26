@@ -1,0 +1,17 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	dh_auto_build
+	mkdir build/; \
+	cp geph5-client_$$(dpkg --print-architecture) build/geph5-client
+
+override_dh_auto_install:
+	dh_auto_install
+	dh_install build/geph5-client usr/bin/
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -rf build
