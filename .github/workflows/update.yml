@@ -1,12 +1,33 @@
-name: Release
+name: Update
 
 on:
-  push:
-    tags:
-      - '*'
+  workflow_dispatch:
+    inputs:
+      force_release:
+        required: false
+        type: boolean
+        default: false
+  schedule:
+    - cron: '32 * * * *'
 
 jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      release-tag: ${{ steps.update.outputs.release-tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Update
+        id: update
+        run: ./update.sh
+        env:
+          GEPH_FORCE_RELEASE: ${{ inputs.force_release }}
   build:
+    needs: update
+    if: ${{ needs.update.outputs.release-tag != '' }}
     strategy:
       matrix:
         include:
@@ -20,6 +41,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           repository: geph-official/geph5
+          ref: ${{ needs.update.outputs.release-tag }}
       - name: Cache cargo registry
         uses: actions/cache@v4
         with:
@@ -69,12 +91,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          ref: main
       - name: Download artifacts
         uses: actions/download-artifact@v5
         with:
           merge-multiple: true
       - name: Commit
-        run:  git add . && git -c user.name='beavailable' -c user.email='beavailable@proton.me' commit -m 'Add files'
+        run:  git add geph5-client_* && git -c user.name='beavailable' -c user.email='beavailable@proton.me' commit -m 'Add files'
       - name: Upload to OBS
         uses: beavailable/obs-upload@main
         with:
