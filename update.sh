@@ -4,7 +4,18 @@ shopt -s inherit_errexit
 
 # $@: arguments
 _curl() {
-    curl -sSL --fail-early --fail-with-body "$@"
+    local retries
+    retries=0
+    while true; do
+        if curl -sSL --fail-early --fail-with-body --connect-timeout 10 "$@"; then
+            break
+        fi
+        ((++retries))
+        if [[ $retries -ge 3 ]]; then
+            return 1
+        fi
+        sleep $((retries * 5))
+    done
 }
 
 read -r version revision <<<$(sed -nE '1s/^\S+ \((\S+)-(\S+)\) .+$/\1 \2/p' debian/changelog)
