@@ -24,6 +24,7 @@ jobs:
         id: update
         run: ./update.sh
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GEPH_FORCE_RELEASE: ${{ inputs.force_release }}
   build:
     needs: update
