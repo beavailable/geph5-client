@@ -98,11 +98,10 @@ jobs:
         uses: actions/download-artifact@v5
         with:
           merge-multiple: true
-      - name: Commit
-        run:  git add geph5-client_* && git -c user.name='beavailable' -c user.email='beavailable@proton.me' commit -m 'Add files'
       - name: Upload to OBS
         uses: beavailable/obs-upload@main
         with:
+          pre-run: git add geph5-client_* && git -c user.name='beavailable' -c user.email='beavailable@proton.me' commit -m 'Add files'
           username: beavailable
           password: ${{ secrets.OBS_PASSWORD }}
           project: home:beavailable
