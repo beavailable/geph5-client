@@ -43,42 +43,12 @@ jobs:
         with:
           repository: geph-official/geph5
           ref: ${{ needs.update.outputs.release-tag }}
-      - name: Cache cargo registry
-        uses: actions/cache@v4
-        with:
-          path: ~/.cargo/registry
-          key: ${{ runner.os }}-cargo-registry--${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-registry--
-
-      - name: Cache cargo index
-        uses: actions/cache@v4
-        with:
-          path: ~/.cargo/git
-          key: ${{ runner.os }}-cargo-git--${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-git--
-
-      - name: Cache cargo binaries
-        uses: actions/cache@v4
-        with:
-          path: ~/.cargo/binaries
-          key: ${{ runner.os }}-cargo-bin--${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-bin--
-      - name: Cache target directory
-        uses: actions/cache@v4
-        with:
-          path: target
-          key: ${{ runner.os }}-target-${{ matrix.arch }}--${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-target-${{ matrix.arch }}--
       - name: Set up Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
+      - name: Set up Cache
+        uses: Swatinem/rust-cache@v2
         with:
-          toolchain: stable
-          profile: minimal
-          override: true
+          key: ${{ matrix.arch }}
       - name: Build
         run: cargo --config profile.release.strip=true build --release --features aws_lambda --manifest-path binaries/geph5-client/Cargo.toml && mv target/release/geph5-client target/release/geph5-client_${{ matrix.arch }}
       - name: Upload artifacts
