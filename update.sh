@@ -66,4 +66,4 @@ fetch_new_version
 [[ -n "$NEW_VERSION" ]] || exit 0
 release_new_version
 
-echo "release-tag=geph5-client-v${new_version%-*}" >>$GITHUB_OUTPUT
+echo "release-tag=geph5-client-v$NEW_VERSION" >>$GITHUB_OUTPUT
