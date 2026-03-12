@@ -50,7 +50,7 @@ jobs:
         with:
           key: ${{ matrix.arch }}
       - name: Build
-        run: cargo --config profile.release.strip=true build --release --features aws_lambda --manifest-path binaries/geph5-client/Cargo.toml && mv target/release/geph5-client target/release/geph5-client_${{ matrix.arch }}
+        run: cargo build --release --features aws_lambda --manifest-path binaries/geph5-client/Cargo.toml && mv target/release/geph5-client target/release/geph5-client_${{ matrix.arch }}
       - name: Upload artifacts
         uses: actions/upload-artifact@v5
         with:
