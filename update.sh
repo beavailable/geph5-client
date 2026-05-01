@@ -23,7 +23,7 @@ _curl() {
 fetch_new_version() {
     local version revision tags tag
     read -r version revision <<<$(sed -nE '1s/^\S+ \((\S+)-(\S+)\) .+$/\1 \2/p' debian/changelog)
-    tags=$(_curl "https://api.github.com/repos/geph-official/geph5/git/refs/tags" | sed -nE 's!^\s+"ref": "refs/tags/geph5-client-v(\S+)",$!\1!p' | tac)
+    tags=$(_curl "https://api.github.com/repos/geph-official/geph5/git/refs/tags" | sed -nE 's!^\s+"ref": "refs/tags/geph5-client-v([0-9.]+)",$!\1!p' | sort -rV)
     for tag in $tags; do
         if [[ "$tag" == "$version" ]]; then
             break
